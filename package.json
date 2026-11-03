@@ -1,0 +1,22 @@
+{
+  "name": "playwright-qa-portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Playwright UI tests against public practice sites.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:saucedemo": "playwright test --project=saucedemo",
+    "test:the-internet": "playwright test --project=the-internet",
+    "test:smoke": "playwright test --grep @smoke",
+    "report": "playwright show-report",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}
