@@ -16,7 +16,7 @@ Login, catalog sorting, the cart badge, and checkout. Tax is asserted, not just 
 | --- | --- |
 | `tests/saucedemo/login.spec.ts` | standard user, locked-out user, bad password, blank username |
 | `tests/saucedemo/inventory.spec.ts` | default A–Z order, Z–A, price low to high, cart badge, logout |
-| `tests/saucedemo/checkout.spec.ts` | taxed total after removing a line, postal code required |
+| `tests/saucedemo/checkout.spec.ts` | taxed total after removing a line, required first/last/postal fields, continue after fixing validation |
 
 ### [The Internet](https://the-internet.herokuapp.com/)
 

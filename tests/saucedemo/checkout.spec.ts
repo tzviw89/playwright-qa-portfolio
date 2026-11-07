@@ -38,6 +38,30 @@ test.describe('checkout', () => {
     });
   });
 
+  test('stops when the first name is missing', async ({ shop, page }) => {
+    await shop.inventory.add(products.onesie.name);
+    await shop.inventory.openCart();
+    await shop.cart.checkout();
+
+    await shop.checkout.fillCustomer({ ...customer, firstName: '' });
+    await shop.checkout.continue();
+
+    await expect(page).toHaveURL(/\/checkout-step-one\.html$/);
+    await expect(shop.checkout.error).toHaveText('Error: First Name is required');
+  });
+
+  test('stops when the last name is missing', async ({ shop, page }) => {
+    await shop.inventory.add(products.onesie.name);
+    await shop.inventory.openCart();
+    await shop.cart.checkout();
+
+    await shop.checkout.fillCustomer({ ...customer, lastName: '' });
+    await shop.checkout.continue();
+
+    await expect(page).toHaveURL(/\/checkout-step-one\.html$/);
+    await expect(shop.checkout.error).toHaveText('Error: Last Name is required');
+  });
+
   test('stops when the postal code is missing', async ({ shop, page }) => {
     await shop.inventory.add(products.onesie.name);
     await shop.inventory.openCart();
@@ -48,5 +72,22 @@ test.describe('checkout', () => {
 
     await expect(page).toHaveURL(/\/checkout-step-one\.html$/);
     await expect(shop.checkout.error).toHaveText('Error: Postal Code is required');
+  });
+
+  test('continues once required checkout fields are filled', async ({ shop, page }) => {
+    await shop.inventory.add(products.onesie.name);
+    await shop.inventory.openCart();
+    await shop.cart.checkout();
+
+    await shop.checkout.fillCustomer({ ...customer, firstName: '' });
+    await shop.checkout.continue();
+    await expect(page).toHaveURL(/\/checkout-step-one\.html$/);
+    await expect(shop.checkout.error).toHaveText('Error: First Name is required');
+
+    await shop.checkout.fillCustomer(customer);
+    await shop.checkout.continue();
+
+    await expect(page).toHaveURL(/\/checkout-step-two\.html$/);
+    await expect(shop.checkout.error).toHaveCount(0);
   });
 });
