@@ -34,16 +34,28 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Triage unit tests
+        run: npm run test:triage
+
       - name: Run tests
+        id: playwright
         run: npx playwright test
 
+      - name: Triage failures
+        if: always()
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: npm run triage
+
       - name: Upload HTML report
-        if: ${{ failure() }}
+        if: ${{ steps.playwright.outcome == 'failure' }}
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
           path: |
             playwright-report/
             test-results/
+            triage-summary.md
           retention-days: 14
           if-no-files-found: warn
