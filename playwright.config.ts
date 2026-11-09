@@ -41,5 +41,14 @@ export default defineConfig({
         navigationTimeout: 45_000,
       },
     },
+    {
+      name: 'demoqa',
+      testDir: './tests/demoqa',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'https://demoqa.com',
+      },
+    },
   ],
 });
+
