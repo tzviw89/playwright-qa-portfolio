@@ -41,5 +41,20 @@ export default defineConfig({
         navigationTimeout: 45_000,
       },
     },
+    {
+      // Request-only project against the public Restful Booker practice API.
+      // Heroku dynos can cold-start; keep a longer timeout like the-internet.
+      name: 'restful-booker',
+      testDir: './tests/restful-booker',
+      timeout: 45_000,
+      use: {
+        baseURL: 'https://restful-booker.herokuapp.com',
+        extraHTTPHeaders: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    },
   ],
 });
+
