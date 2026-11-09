@@ -11,6 +11,7 @@
     "test:saucedemo": "playwright test --project=saucedemo",
     "test:the-internet": "playwright test --project=the-internet",
     "test:restful-booker": "playwright test --project=restful-booker",
+    "test:demoqa": "playwright test --project=demoqa",
     "test:smoke": "playwright test --grep @smoke",
     "report": "playwright show-report",
     "typecheck": "tsc --noEmit"
