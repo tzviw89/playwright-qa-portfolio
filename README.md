@@ -59,7 +59,7 @@ Practice Form and Web Tables. Third-party ad domains are aborted on the browser 
 - **Fixtures only where setup repeats.** Sauce Demo's `shop` fixture signs in as `standard_user` before inventory/checkout specs; login specs use a fixture that only opens the form. DemoQA fixtures open the target page and block ad routes on the shared context.
 - **`@smoke` tags** mark a thin cross-project slice (`npm run test:smoke` / `--grep @smoke`). They are not a separate CI job.
 - **API vs UI.** Restful Booker is deliberately request-only so the portfolio shows both browser automation and HTTP checks without mixing them in one project.
-- **CI.** GitHub Actions (`.github/workflows/playwright.yml`) typechecks and runs `npx playwright test` on pull requests and pushes to `main`. Chromium only, two workers, retries twice on CI, uploads the HTML report when the job fails.
+- **CI.** GitHub Actions (`.github/workflows/playwright.yml`) typechecks, runs the triage unit tests, and runs `npx playwright test` on pull requests and pushes to `main`. Chromium only, two workers, retries twice on CI, uploads the HTML report when Playwright fails. After Playwright, a triage step reads the JSON report. That step is `continue-on-error`, so a missing report or a model error stays in the log.
 
 ## Demo accounts
 
@@ -113,10 +113,22 @@ Single file example: `npx playwright test tests/saucedemo/checkout.spec.ts`.
 
 On failure, Playwright keeps a screenshot. A trace is kept on the first retry (`npx playwright show-trace <trace.zip>`).
 
+## Failure triage
+
+`npm run triage` reads Playwright's JSON report (`test-results/results.json`) and writes `triage-summary.md`. It keeps failed tests and tests that passed on retry, then suggests a label for each one: `flaky`, `product bug`, or `test bug`.
+
+Rules run first. A pass on retry is flaky. A locator timeout or a strict-mode violation is a test bug. An HTTP 5xx response, or a wrong value returned by the app, is a product bug. When `OPENAI_API_KEY` is set, a model suggests labels for whatever the rules leave open. Labels are suggestions. The sample report, the rules, and the fake-model tests are in [`triage/README.md`](triage/README.md).
+
+```bash
+npm run triage
+npm run test:triage
+```
+
 ## Layout
 
 ```
 playwright.config.ts     one Playwright project per site
+triage/                   failure triage agent, sample report, unit tests
 src/saucedemo/           page objects, catalog, signed-in fixture
 src/the-internet/        page objects and published demo credentials
 src/restful-booker/      booking types, sample payload, request helpers
@@ -140,4 +152,4 @@ Worth a later PR, still public sandboxes: [UI Testing Playground](http://uitesti
 
 ## CI
 
-[`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) typechecks and runs `npx playwright test` on pull requests and on pushes to `main`. Chromium only, two workers.
+[`.github/workflows/playwright.yml`](.github/workflows/playwright.yml) typechecks, runs `npm run test:triage`, and runs `npx playwright test` on pull requests and on pushes to `main`. Chromium only, two workers. The triage unit tests use a fake model. After Playwright, `npm run triage` runs with `if: always()` and `continue-on-error`. It calls a model only when the `OPENAI_API_KEY` repository secret is set; otherwise it stays on the rules.

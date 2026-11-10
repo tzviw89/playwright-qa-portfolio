@@ -1,0 +1,169 @@
+{
+  "config": { "rootDir": ".", "projects": [{ "name": "saucedemo" }, { "name": "restful-booker" }] },
+  "suites": [
+    {
+      "title": "tests/saucedemo/checkout.spec.ts",
+      "file": "tests/saucedemo/checkout.spec.ts",
+      "specs": [
+        {
+          "title": "thank-you heading is shown",
+          "ok": true,
+          "tests": [
+            {
+              "projectName": "saucedemo",
+              "status": "expected",
+              "results": [{ "status": "passed", "retry": 0, "errors": [] }]
+            }
+          ]
+        },
+        {
+          "title": "taxed total is the subtotal plus 8 percent",
+          "ok": true,
+          "tests": [
+            {
+              "projectName": "saucedemo",
+              "status": "flaky",
+              "results": [
+                {
+                  "status": "failed",
+                  "retry": 0,
+                  "errors": [
+                    {
+                      "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Checkout' })"
+                    }
+                  ]
+                },
+                { "status": "passed", "retry": 1, "errors": [] }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "tests/saucedemo/inventory.spec.ts",
+      "file": "tests/saucedemo/inventory.spec.ts",
+      "specs": [
+        {
+          "title": "sort the catalog by price",
+          "ok": false,
+          "tests": [
+            {
+              "projectName": "saucedemo",
+              "status": "unexpected",
+              "results": [
+                {
+                  "status": "timedOut",
+                  "retry": 0,
+                  "errors": [{ "message": "Error: Test timeout of 30000ms exceeded." }]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "suites": [
+        {
+          "title": "cart",
+          "file": "tests/saucedemo/inventory.spec.ts",
+          "specs": [
+            {
+              "title": "add one item",
+              "ok": false,
+              "tests": [
+                {
+                  "projectName": "saucedemo",
+                  "status": "unexpected",
+                  "results": [
+                    {
+                      "status": "failed",
+                      "retry": 0,
+                      "errors": [
+                        {
+                          "message": "Error: strict mode violation: locator('button') resolved to 2 elements:\n    1) <button>Add to cart</button>\n    2) <button>Add to cart</button>"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "tests/restful-booker/booking.spec.ts",
+      "file": "tests/restful-booker/booking.spec.ts",
+      "specs": [
+        {
+          "title": "create booking returns the new id",
+          "ok": false,
+          "tests": [
+            {
+              "projectName": "restful-booker",
+              "status": "unexpected",
+              "results": [
+                {
+                  "status": "failed",
+                  "retry": 0,
+                  "errors": [{ "message": "Error: apiRequestContext.post: 500 Internal Server Error" }]
+                },
+                {
+                  "status": "failed",
+                  "retry": 1,
+                  "errors": [
+                    {
+                      "message": "Error: expect(received).toBe(expected)\n\nExpected: 201\nReceived: 500\n\n  18 |     expect(response.status()).toBe(201);"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "read booking returns the saved name",
+          "ok": false,
+          "tests": [
+            {
+              "projectName": "restful-booker",
+              "status": "unexpected",
+              "results": [
+                {
+                  "status": "failed",
+                  "retry": 0,
+                  "errors": [
+                    {
+                      "message": "Error: expect(received).toBe(expected)\n\nExpected: \"Created\"\nReceived: \"Unavailable\"\n\n   8 |     expect(await response.text()).toBe('Created');"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "delete booking is refused without a token",
+          "ok": true,
+          "tests": [
+            {
+              "projectName": "restful-booker",
+              "status": "skipped",
+              "results": [{ "status": "skipped", "retry": 0 }]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-09T09:00:00.000Z",
+    "duration": 42000,
+    "expected": 1,
+    "unexpected": 4,
+    "flaky": 1,
+    "skipped": 1
+  }
+}
