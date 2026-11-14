@@ -2,7 +2,7 @@
 
 [![Playwright](https://github.com/tzviw89/playwright-qa-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tzviw89/playwright-qa-portfolio/actions/workflows/playwright.yml)
 
-Playwright Test suites against public practice sites — three UI projects and one API project. The structure is the part worth reading: one Playwright project per site, page objects (or a thin request client) next to the screens they wrap, and fixtures only where shared setup would otherwise repeat.
+Playwright Test suites against public practice sites — four UI projects and one API project. The structure is the part worth reading: one Playwright project per site, page objects (or a thin request client) next to the screens they wrap, and fixtures only where shared setup would otherwise repeat.
 
 Nothing here targets a private or employer application. The accounts below are the ones the sandboxes publish themselves.
 
@@ -50,11 +50,22 @@ Practice Form and Web Tables. Third-party ad domains are aborted on the browser 
 | `tests/demoqa/practice-form.spec.ts` | required fields appear in the confirmation modal; missing first name stays on the form |
 | `tests/demoqa/web-tables.spec.ts` | add a row, find it by search, delete it |
 
-`@smoke` is the short path: Sauce Demo standard-user login and checkout total, The Internet form auth and dynamic loading, Restful Booker ping, and DemoQA practice-form submit. CI runs the full suite.
+### [UI Testing Playground](http://uitestingplayground.com/)
+
+Locator and synchronization exercises. The client-delay label is inserted after 15 seconds, so this project uses a longer test timeout and the assertion waits — there is no `waitForTimeout`.
+
+| Spec | What it checks |
+| --- | --- |
+| `tests/uitestingplayground/dynamic-id.spec.ts` | the button is clicked by its name; the generated id changes on reload |
+| `tests/uitestingplayground/client-delay.spec.ts` | the calculated label is absent until client-side processing finishes |
+| `tests/uitestingplayground/text-input.spec.ts` | the button label becomes the text entered in the field |
+| `tests/uitestingplayground/visibility.spec.ts` | removed, zero-width, and styled-out buttons are hidden; opacity 0, offscreen, and overlapped buttons stay visible |
+
+`@smoke` is the short path: Sauce Demo standard-user login and checkout total, The Internet form auth and dynamic loading, Restful Booker ping, DemoQA practice-form submit, and UI Testing Playground dynamic id and text input. CI runs the full suite.
 
 ## Design choices
 
-- **One project per site.** Each entry in `playwright.config.ts` owns its `testDir` and `baseURL` (or request headers for the API project). Timeouts are longer for Heroku-backed sites.
+- **One project per site.** Each entry in `playwright.config.ts` owns its `testDir` and `baseURL` (or request headers for the API project). Timeouts are longer where the host or the scenario needs it: Heroku cold starts, and the playground's 15-second client-side delay.
 - **Page objects hold locators and actions; assertions stay in specs.** UI suites follow that split. Restful Booker has no pages — helpers take an `APIRequestContext` instead.
 - **Fixtures only where setup repeats.** Sauce Demo's `shop` fixture signs in as `standard_user` before inventory/checkout specs; login specs use a fixture that only opens the form. DemoQA fixtures open the target page and block ad routes on the shared context.
 - **`@smoke` tags** mark a thin cross-project slice (`npm run test:smoke` / `--grep @smoke`). They are not a separate CI job.
@@ -77,6 +88,8 @@ Practice Form and Web Tables. Third-party ad domains are aborted on the browser 
 
 **DemoQA.** No login. Specs use invented student / table-record data in `src/demoqa/catalog.ts`.
 
+**UI Testing Playground.** No login.
+
 ## Run
 
 Node.js 22 or newer.
@@ -94,11 +107,13 @@ npx playwright test --project=saucedemo
 npx playwright test --project=the-internet
 npx playwright test --project=restful-booker
 npx playwright test --project=demoqa
+npx playwright test --project=uitestingplayground
 # same via:
 npm run test:saucedemo
 npm run test:the-internet
 npm run test:restful-booker
 npm run test:demoqa
+npm run test:uitestingplayground
 ```
 
 Smoke and report:
@@ -133,10 +148,12 @@ src/saucedemo/           page objects, catalog, signed-in fixture
 src/the-internet/        page objects and published demo credentials
 src/restful-booker/      booking types, sample payload, request helpers
 src/demoqa/              page objects, catalog, ad blocking, fixtures
+src/uitestingplayground/ page objects for locator and sync challenges
 tests/saucedemo/
 tests/the-internet/
 tests/restful-booker/
 tests/demoqa/
+tests/uitestingplayground/
 ```
 
 Swag Labs exposes `data-test` (set as Playwright's `testIdAttribute`). Where a control has an accessible name — Login, Sort products, Add to cart — the page object uses that instead. The Internet pages are plain HTML, so those objects use labels and roles. DemoQA often needs ids and label-for clicks because of how the form is marked up.
@@ -148,7 +165,7 @@ Swag Labs exposes `data-test` (set as Playwright's `testIdAttribute`). Where a c
 3. Keep accounts next to the page objects or client, and only accounts the practice site publishes.
 4. Add an npm script if you want a one-liner for that project.
 
-Worth a later PR, still public sandboxes: [UI Testing Playground](http://uitestingplayground.com/), [Practice Software Testing](https://practicesoftwaretesting.com/).
+Worth a later PR, still public sandboxes: [Practice Software Testing](https://practicesoftwaretesting.com/).
 
 ## CI
 

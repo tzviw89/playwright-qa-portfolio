@@ -71,5 +71,16 @@ export default defineConfig({
         baseURL: 'https://demoqa.com',
       },
     },
+    {
+      // Client Side Delay inserts its label after 15s, so the default 30s is tight.
+      name: 'uitestingplayground',
+      testDir: './tests/uitestingplayground',
+      timeout: 45_000,
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://uitestingplayground.com',
+      },
+    },
   ],
 });
+
