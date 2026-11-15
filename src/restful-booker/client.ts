@@ -19,6 +19,10 @@ export function createToken(request: APIRequestContext): Promise<APIResponse> {
   });
 }
 
+function authCookie(token?: string): { Cookie: string } | undefined {
+  return token ? { Cookie: `token=${token}` } : undefined;
+}
+
 export function updateBooking(
   request: APIRequestContext,
   id: number,
@@ -27,16 +31,28 @@ export function updateBooking(
 ): Promise<APIResponse> {
   return request.put(`/booking/${id}`, {
     data: booking,
-    headers: token ? { Cookie: `token=${token}` } : undefined,
+    headers: authCookie(token),
+  });
+}
+
+export function patchBooking(
+  request: APIRequestContext,
+  id: number,
+  booking: Partial<Booking>,
+  token?: string,
+): Promise<APIResponse> {
+  return request.patch(`/booking/${id}`, {
+    data: booking,
+    headers: authCookie(token),
   });
 }
 
 export function deleteBooking(
   request: APIRequestContext,
   id: number,
-  token: string,
+  token?: string,
 ): Promise<APIResponse> {
   return request.delete(`/booking/${id}`, {
-    headers: { Cookie: `token=${token}` },
+    headers: authCookie(token),
   });
 }

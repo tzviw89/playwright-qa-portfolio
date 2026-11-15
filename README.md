@@ -34,12 +34,14 @@ Elemental Selenium exercises. Heroku sometimes takes a while to answer, so this 
 
 ### [Restful Booker](https://restful-booker.herokuapp.com/) (API)
 
-Request-only project. Specs use Playwright's `request` fixture against the public booking API — no browser, no page objects. A small client in `src/restful-booker/` wraps create / read / auth / update / delete; payloads come from `sampleBooking()`.
+Request-only project against the public Restful Booker practice API. Specs use Playwright's `request` fixture — no browser, no page objects. `src/restful-booker/client.ts` wraps auth, create, read, PUT, PATCH, and delete. Payloads come from `sampleBooking()`. The published demo admin account is the `admin` constant in `src/restful-booker/accounts.ts` (`admin` / `password123`).
+
+Each booking test creates its own record and passes the id to the `bookings` fixture, which deletes it afterwards. The demo keeps bookings in memory and can drop them on restart; a cleanup delete that finds nothing (404 or 405) is ignored. The delete check itself still expects 201, then 404 on the following read. A delete with no token expects 403, and the booking is still there.
 
 | Spec | What it checks |
 | --- | --- |
 | `tests/restful-booker/health.spec.ts` | `GET /ping` returns 201 |
-| `tests/restful-booker/booking.spec.ts` | create + read back, token update, token delete, update without a token returns 403 |
+| `tests/restful-booker/booking.spec.ts` | auth token; create then read fields; PUT and PATCH, then delete (201, then 404); delete without a token returns 403 |
 
 ### [DemoQA](https://demoqa.com/)
 
@@ -67,7 +69,7 @@ Locator and synchronization exercises. The client-delay label is inserted after 
 
 - **One project per site.** Each entry in `playwright.config.ts` owns its `testDir` and `baseURL` (or request headers for the API project). Timeouts are longer where the host or the scenario needs it: Heroku cold starts, and the playground's 15-second client-side delay.
 - **Page objects hold locators and actions; assertions stay in specs.** UI suites follow that split. Restful Booker has no pages — helpers take an `APIRequestContext` instead.
-- **Fixtures only where setup repeats.** Sauce Demo's `shop` fixture signs in as `standard_user` before inventory/checkout specs; login specs use a fixture that only opens the form. DemoQA fixtures open the target page and block ad routes on the shared context.
+- **Fixtures only where setup repeats.** Sauce Demo's `shop` fixture signs in as `standard_user` before inventory/checkout specs; login specs use a fixture that only opens the form. DemoQA fixtures open the target page and block ad routes on the shared context. Restful Booker's `bookings` fixture records ids the spec created and deletes them after the test.
 - **`@smoke` tags** mark a thin cross-project slice (`npm run test:smoke` / `--grep @smoke`). They are not a separate CI job.
 - **API vs UI.** Restful Booker is deliberately request-only so the portfolio shows both browser automation and HTTP checks without mixing them in one project.
 - **CI.** GitHub Actions (`.github/workflows/playwright.yml`) typechecks, runs the triage unit tests, and runs `npx playwright test` on pull requests and pushes to `main`. Chromium only, two workers, retries twice on CI, uploads the HTML report when Playwright fails. After Playwright, a triage step reads the JSON report. That step is `continue-on-error`, so a missing report or a model error stays in the log.
@@ -146,7 +148,7 @@ playwright.config.ts     one Playwright project per site
 triage/                   failure triage agent, sample report, unit tests
 src/saucedemo/           page objects, catalog, signed-in fixture
 src/the-internet/        page objects and published demo credentials
-src/restful-booker/      booking types, sample payload, request helpers
+src/restful-booker/      booking types, sample payload, request client, cleanup fixture
 src/demoqa/              page objects, catalog, ad blocking, fixtures
 src/uitestingplayground/ page objects for locator and sync challenges
 tests/saucedemo/
