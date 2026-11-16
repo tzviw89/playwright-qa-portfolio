@@ -12,6 +12,7 @@
     "test:saucedemo": "playwright test --project=saucedemo",
     "test:the-internet": "playwright test --project=the-internet",
     "test:restful-booker": "playwright test --project=restful-booker",
+    "test:petstore": "playwright test --project=petstore",
     "test:demoqa": "playwright test --project=demoqa",
     "test:uitestingplayground": "playwright test --project=uitestingplayground",
     "test:smoke": "playwright test --grep @smoke",

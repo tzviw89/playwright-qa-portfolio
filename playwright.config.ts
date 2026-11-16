@@ -64,6 +64,22 @@ export default defineConfig({
       },
     },
     {
+      // Request-only project against the public Swagger Petstore demo.
+      // The store is shared and sometimes slow; keep a longer timeout.
+      // The trailing slash is required. Client paths are relative (`pet`, not
+      // `/pet`); a leading slash would replace `/v2` and 404 at the host root.
+      name: 'petstore',
+      testDir: './tests/petstore',
+      timeout: 45_000,
+      use: {
+        baseURL: 'https://petstore.swagger.io/v2/',
+        extraHTTPHeaders: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    },
+    {
       name: 'demoqa',
       testDir: './tests/demoqa',
       use: {
