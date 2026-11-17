@@ -80,6 +80,19 @@ export default defineConfig({
       },
     },
     {
+      // Request-only project against the public Practice Software Testing API.
+      // Catalog reads only: no auth headers and no writes.
+      name: 'practice-api',
+      testDir: './tests/practice-api',
+      use: {
+        baseURL: 'https://api.practicesoftwaretesting.com',
+        extraHTTPHeaders: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      },
+    },
+    {
       name: 'demoqa',
       testDir: './tests/demoqa',
       use: {

@@ -2,7 +2,7 @@
 
 [![Playwright](https://github.com/tzviw89/playwright-qa-portfolio/actions/workflows/playwright.yml/badge.svg)](https://github.com/tzviw89/playwright-qa-portfolio/actions/workflows/playwright.yml)
 
-Playwright Test suites against public practice sites — four UI projects and two API projects. The structure is the part worth reading: one Playwright project per site, page objects (or a thin request client) next to the screens they wrap, and fixtures only where shared setup would otherwise repeat.
+Playwright Test suites against public practice sites — four UI projects and three API projects. The structure is the part worth reading: one Playwright project per site, page objects (or a thin request client) next to the screens they wrap, and fixtures only where shared setup would otherwise repeat.
 
 Nothing here targets a private or employer application. The accounts below are the ones the sandboxes publish themselves.
 
@@ -53,6 +53,17 @@ Each pet test creates its own record and passes the id to the `pets` fixture, wh
 | --- | --- |
 | `tests/petstore/pet.spec.ts` | create, read by id, PUT, find by status, delete (200, then GET 404) |
 
+### [Practice Software Testing](https://api.practicesoftwaretesting.com/) (API)
+
+Request-only project against the public Practice Software Testing catalog. Specs use Playwright's `request` fixture — no browser, no page objects, no login. `src/practice-api/client.ts` wraps the GETs. The suite does not create or update anything.
+
+`GET /products` returns a page (`current_page`, `data`, `from`, `last_page`, `per_page`, `to`, `total`). Counts and page size come from that payload. Each row is checked for the product fields the catalog returns, including category, brand, and image. One id from the list is read with `GET /products/{id}`; the detail adds `specs`, and the shared fields are compared to the list row. `q` filters by product name, case-insensitively. The search test uses a name from the list, then checks that every hit contains it. Categories and brands are arrays. An unknown product id returns 404 with `Requested item not found`. The `productPage` fixture loads the first page for specs that need a real id.
+
+| Spec | What it checks |
+| --- | --- |
+| `tests/practice-api/products.spec.ts` | paginated product list, read by id, `q` name filter, unknown id 404 |
+| `tests/practice-api/catalog.spec.ts` | categories (including parent ids), brands |
+
 ### [DemoQA](https://demoqa.com/)
 
 Practice Form and Web Tables. Third-party ad domains are aborted on the browser context (`src/demoqa/ads.ts`) so overlays never cover Submit, radio labels, or table actions.
@@ -78,10 +89,10 @@ Locator and synchronization exercises. The client-delay label is inserted after 
 ## Design choices
 
 - **One project per site.** Each entry in `playwright.config.ts` owns its `testDir` and `baseURL` (or request headers for the API projects). Timeouts are longer where the host or the scenario needs it: Heroku cold starts, the shared Petstore demo, and the playground's 15-second client-side delay.
-- **Page objects hold locators and actions; assertions stay in specs.** UI suites follow that split. Restful Booker and Petstore have no pages — helpers take an `APIRequestContext` instead.
-- **Fixtures only where setup repeats.** Sauce Demo's `shop` fixture signs in as `standard_user` before inventory/checkout specs; login specs use a fixture that only opens the form. DemoQA fixtures open the target page and block ad routes on the shared context. Restful Booker's `bookings` fixture records ids the spec created and deletes them after the test. Petstore's `pets` fixture does the same, and a 404 on cleanup counts as already gone.
+- **Page objects hold locators and actions; assertions stay in specs.** UI suites follow that split. Restful Booker, Petstore, and Practice Software Testing have no pages — helpers take an `APIRequestContext` instead.
+- **Fixtures only where setup repeats.** Sauce Demo's `shop` fixture signs in as `standard_user` before inventory/checkout specs; login specs use a fixture that only opens the form. DemoQA fixtures open the target page and block ad routes on the shared context. Restful Booker's `bookings` fixture records ids the spec created and deletes them after the test. Petstore's `pets` fixture does the same, and a 404 on cleanup counts as already gone. Practice Software Testing's `productPage` fixture reads the first product page so a spec can pick a real id. That project only sends GETs.
 - **`@smoke` tags** mark a thin cross-project slice (`npm run test:smoke` / `--grep @smoke`). They are not a separate CI job.
-- **API vs UI.** Restful Booker and Petstore are request-only so the portfolio shows both browser automation and HTTP checks without mixing them in one project.
+- **API vs UI.** Restful Booker, Petstore, and Practice Software Testing are request-only so the portfolio shows both browser automation and HTTP checks without mixing them in one project.
 - **CI.** GitHub Actions (`.github/workflows/playwright.yml`) typechecks, runs the triage unit tests, and runs `npx playwright test` on pull requests and pushes to `main`. Chromium only, two workers, retries twice on CI, uploads the HTML report when Playwright fails. After Playwright, a triage step reads the JSON report. That step is `continue-on-error`, so a missing report or a model error stays in the log.
 
 ## Demo accounts
@@ -99,6 +110,8 @@ Locator and synchronization exercises. The client-delay label is inserted after 
 **Restful Booker auth.** Defaults to the published `admin` / `password123`. Override with `BOOKER_USERNAME` / `BOOKER_PASSWORD` if needed.
 
 **Swagger Petstore.** No login. The pet calls in this suite do not send an api key.
+
+**Practice Software Testing.** No login. The catalog checks send GET requests only.
 
 **DemoQA.** No login. Specs use invented student / table-record data in `src/demoqa/catalog.ts`.
 
@@ -121,6 +134,7 @@ npx playwright test --project=saucedemo
 npx playwright test --project=the-internet
 npx playwright test --project=restful-booker
 npx playwright test --project=petstore
+npx playwright test --project=practice-api
 npx playwright test --project=demoqa
 npx playwright test --project=uitestingplayground
 # same via:
@@ -128,6 +142,7 @@ npm run test:saucedemo
 npm run test:the-internet
 npm run test:restful-booker
 npm run test:petstore
+npm run test:practice-api
 npm run test:demoqa
 npm run test:uitestingplayground
 ```
@@ -164,12 +179,14 @@ src/saucedemo/           page objects, catalog, signed-in fixture
 src/the-internet/        page objects and published demo credentials
 src/restful-booker/      booking types, sample payload, request client, cleanup fixture
 src/petstore/            pet types, sample payload, request client, cleanup fixture
+src/practice-api/        catalog types, request client, product-page fixture
 src/demoqa/              page objects, catalog, ad blocking, fixtures
 src/uitestingplayground/ page objects for locator and sync challenges
 tests/saucedemo/
 tests/the-internet/
 tests/restful-booker/
 tests/petstore/
+tests/practice-api/
 tests/demoqa/
 tests/uitestingplayground/
 ```
@@ -182,8 +199,6 @@ Swag Labs exposes `data-test` (set as Playwright's `testIdAttribute`). Where a c
 2. Register a project in `playwright.config.ts` with that `testDir` and `baseURL` (or request `use` for an API-only suite).
 3. Keep accounts next to the page objects or client, and only accounts the practice site publishes.
 4. Add an npm script if you want a one-liner for that project.
-
-Worth a later PR, still public sandboxes: [Practice Software Testing](https://practicesoftwaretesting.com/).
 
 ## CI
 
