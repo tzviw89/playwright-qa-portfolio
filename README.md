@@ -31,6 +31,9 @@ Elemental Selenium exercises. Heroku sometimes takes a while to answer, so this 
 | `tests/the-internet/javascript-alerts.spec.ts` | accept a JS alert, dismiss a confirm, fill a prompt |
 | `tests/the-internet/file-upload.spec.ts` | upload via `setInputFiles`, assert the shown filename |
 | `tests/the-internet/dynamic-controls.spec.ts` | async remove/add checkbox, enable/disable text input |
+| `tests/the-internet/hovers.spec.ts` | hovering an avatar shows that user's name and profile link |
+| `tests/the-internet/key-presses.spec.ts` | the result names the key that was pressed |
+| `tests/the-internet/add-remove-elements.spec.ts` | Add Element creates Delete buttons; Delete removes one |
 
 ### [Restful Booker](https://restful-booker.herokuapp.com/) (API)
 
