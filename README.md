@@ -69,12 +69,15 @@ Request-only project against the public Practice Software Testing catalog. Specs
 
 ### [DemoQA](https://demoqa.com/)
 
-Practice Form and Web Tables. Third-party ad domains are aborted on the browser context (`src/demoqa/ads.ts`) so overlays never cover Submit, radio labels, or table actions.
+Practice Form, Web Tables, Text Box, Radio Button, and Buttons. Third-party ad domains are aborted on the browser context (`src/demoqa/ads.ts`) so overlays never cover Submit, radio labels, table actions, or the button row.
 
 | Spec | What it checks |
 | --- | --- |
 | `tests/demoqa/practice-form.spec.ts` | required fields appear in the confirmation modal; missing first name stays on the form |
 | `tests/demoqa/web-tables.spec.ts` | add a row, find it by search, delete it |
+| `tests/demoqa/text-box.spec.ts` | submitted name, email, and addresses appear in the output; invalid email shows an error and no output |
+| `tests/demoqa/radio-button.spec.ts` | Yes and Impressive can be selected; No is disabled |
+| `tests/demoqa/buttons.spec.ts` | double click, right click, and dynamic click each show their message |
 
 ### [UI Testing Playground](http://uitestingplayground.com/)
 
@@ -116,7 +119,7 @@ Locator and synchronization exercises. The client-delay label is inserted after 
 
 **Practice Software Testing.** No login. The catalog checks send GET requests only.
 
-**DemoQA.** No login. Specs use invented student / table-record data in `src/demoqa/catalog.ts`.
+**DemoQA.** No login. Specs use invented student, table-record, and text-box data in `src/demoqa/catalog.ts`.
 
 **UI Testing Playground.** No login.
 
@@ -194,7 +197,7 @@ tests/demoqa/
 tests/uitestingplayground/
 ```
 
-Swag Labs exposes `data-test` (set as Playwright's `testIdAttribute`). Where a control has an accessible name — Login, Sort products, Add to cart — the page object uses that instead. The Internet pages are plain HTML, so those objects use labels and roles. DemoQA often needs ids and label-for clicks because of how the form is marked up.
+Swag Labs exposes `data-test` (set as Playwright's `testIdAttribute`). Where a control has an accessible name — Login, Sort products, Add to cart — the page object uses that instead. The Internet pages are plain HTML, so those objects use labels and roles. DemoQA often needs ids and label-for clicks because of how the form is marked up. The plain Buttons control has a generated id, so that page object uses the accessible name Click Me.
 
 ## Adding a site
 
