@@ -33,3 +33,18 @@ export const tableRecord: TableRecord = {
   salary: '48000',
   department: 'Research',
 };
+
+export type TextBoxEntry = {
+  fullName: string;
+  email: string;
+  currentAddress: string;
+  permanentAddress: string;
+};
+
+/** Invented demo data only — not a real person. */
+export const textBoxEntry: TextBoxEntry = {
+  fullName: 'Jordan Hale',
+  email: 'jordan.hale@example.com',
+  currentAddress: '18 Market Street',
+  permanentAddress: '42 Harbor Lane',
+};
