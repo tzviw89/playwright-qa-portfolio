@@ -34,6 +34,8 @@ Elemental Selenium exercises. Heroku sometimes takes a while to answer, so this 
 | `tests/the-internet/hovers.spec.ts` | hovering an avatar shows that user's name and profile link |
 | `tests/the-internet/key-presses.spec.ts` | the result names the key that was pressed |
 | `tests/the-internet/add-remove-elements.spec.ts` | Add Element creates Delete buttons; Delete removes one |
+| `tests/the-internet/status-codes.spec.ts` | clicking 200, 301, 404, and 500 lands on that status page |
+| `tests/the-internet/basic-auth.spec.ts` | published admin/admin; a request without credentials returns 401 |
 
 ### [Restful Booker](https://restful-booker.herokuapp.com/) (API)
 
@@ -112,6 +114,8 @@ Locator and synchronization exercises. The client-delay label is inserted after 
 | `problem_user`, `performance_glitch_user`, `error_user`, `visual_user` | not used. They break images, timing, specific buttons, or layout on purpose |
 
 **The Internet form authentication.** `tomsmith` / `SuperSecretPassword!`, printed on the login page.
+
+**The Internet basic auth.** `admin` / `admin`, printed next to the Basic Auth link on the home page.
 
 **Restful Booker auth.** Defaults to the published `admin` / `password123`. Override with `BOOKER_USERNAME` / `BOOKER_PASSWORD` if needed.
 
