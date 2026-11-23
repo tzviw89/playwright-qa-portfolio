@@ -1,6 +1,7 @@
 import { test as base, expect } from '@playwright/test';
 import { blockDemoQaAds } from './ads';
 import { ButtonsPage } from './buttons.page';
+import { CheckboxPage } from './checkbox.page';
 import { PracticeFormPage } from './practice-form.page';
 import { RadioButtonPage } from './radio-button.page';
 import { TextBoxPage } from './text-box.page';
@@ -8,6 +9,7 @@ import { WebTablesPage } from './web-tables.page';
 
 type DemoQaFixtures = {
   buttons: ButtonsPage;
+  checkbox: CheckboxPage;
   practiceForm: PracticeFormPage;
   radioButton: RadioButtonPage;
   textBox: TextBoxPage;
@@ -16,7 +18,7 @@ type DemoQaFixtures = {
 
 /**
  * Every DemoQA page gets ad traffic aborted on the context so overlays
- * never cover Submit, radio labels, table actions, or the button row.
+ * never cover Submit, radio labels, table actions, the button row, or the check box tree.
  */
 export const test = base.extend<DemoQaFixtures>({
   context: async ({ context }, use) => {
@@ -28,6 +30,12 @@ export const test = base.extend<DemoQaFixtures>({
     const buttons = new ButtonsPage(page);
     await buttons.open();
     await use(buttons);
+  },
+
+  checkbox: async ({ page }, use) => {
+    const checkbox = new CheckboxPage(page);
+    await checkbox.open();
+    await use(checkbox);
   },
 
   practiceForm: async ({ page }, use) => {

@@ -71,7 +71,7 @@ Request-only project against the public Practice Software Testing catalog. Specs
 
 ### [DemoQA](https://demoqa.com/)
 
-Practice Form, Web Tables, Text Box, Radio Button, and Buttons. Third-party ad domains are aborted on the browser context (`src/demoqa/ads.ts`) so overlays never cover Submit, radio labels, table actions, or the button row.
+Practice Form, Web Tables, Text Box, Radio Button, Buttons, and Check Box. Third-party ad domains are aborted on the browser context (`src/demoqa/ads.ts`) so overlays never cover Submit, radio labels, table actions, the button row, or the check box tree.
 
 | Spec | What it checks |
 | --- | --- |
@@ -80,6 +80,7 @@ Practice Form, Web Tables, Text Box, Radio Button, and Buttons. Third-party ad d
 | `tests/demoqa/text-box.spec.ts` | submitted name, email, and addresses appear in the output; invalid email shows an error and no output |
 | `tests/demoqa/radio-button.spec.ts` | Yes and Impressive can be selected; No is disabled |
 | `tests/demoqa/buttons.spec.ts` | double click, right click, and dynamic click each show their message |
+| `tests/demoqa/checkbox.spec.ts` | a checked leaf is listed on its own; a parent checks its children and turns mixed when one is cleared |
 
 ### [UI Testing Playground](http://uitestingplayground.com/)
 
