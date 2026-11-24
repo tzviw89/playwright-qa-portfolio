@@ -4,6 +4,7 @@ import { ButtonsPage } from './buttons.page';
 import { CheckboxPage } from './checkbox.page';
 import { PracticeFormPage } from './practice-form.page';
 import { RadioButtonPage } from './radio-button.page';
+import { SelectMenuPage } from './select-menu.page';
 import { TextBoxPage } from './text-box.page';
 import { WebTablesPage } from './web-tables.page';
 
@@ -12,13 +13,15 @@ type DemoQaFixtures = {
   checkbox: CheckboxPage;
   practiceForm: PracticeFormPage;
   radioButton: RadioButtonPage;
+  selectMenu: SelectMenuPage;
   textBox: TextBoxPage;
   webTables: WebTablesPage;
 };
 
 /**
  * Every DemoQA page gets ad traffic aborted on the context so overlays
- * never cover Submit, radio labels, table actions, the button row, or the check box tree.
+ * never cover Submit, radio labels, table actions, the button row, the check box tree,
+ * or the select menus.
  */
 export const test = base.extend<DemoQaFixtures>({
   context: async ({ context }, use) => {
@@ -48,6 +51,12 @@ export const test = base.extend<DemoQaFixtures>({
     const radioButton = new RadioButtonPage(page);
     await radioButton.open();
     await use(radioButton);
+  },
+
+  selectMenu: async ({ page }, use) => {
+    const selectMenu = new SelectMenuPage(page);
+    await selectMenu.open();
+    await use(selectMenu);
   },
 
   textBox: async ({ page }, use) => {
