@@ -71,7 +71,7 @@ Request-only project against the public Practice Software Testing catalog. Specs
 
 ### [DemoQA](https://demoqa.com/)
 
-Practice Form, Web Tables, Text Box, Radio Button, Buttons, Check Box, and Select Menu. Third-party ad domains are aborted on the browser context (`src/demoqa/ads.ts`) so overlays never cover Submit, radio labels, table actions, the button row, the check box tree, or the select menus.
+Practice Form, Web Tables, Text Box, Radio Button, Buttons, Check Box, Select Menu, and Date Picker. Third-party ad domains are aborted on the browser context (`src/demoqa/ads.ts`) so overlays never cover Submit, radio labels, table actions, the button row, the check box tree, the select menus, or the date pickers.
 
 | Spec | What it checks |
 | --- | --- |
@@ -82,6 +82,7 @@ Practice Form, Web Tables, Text Box, Radio Button, Buttons, Check Box, and Selec
 | `tests/demoqa/buttons.spec.ts` | double click, right click, and dynamic click each show their message |
 | `tests/demoqa/checkbox.spec.ts` | a checked leaf is listed on its own; a parent checks its children and turns mixed when one is cleared |
 | `tests/demoqa/select-menu.spec.ts` | a grouped option replaced by a root option, a title, the old-style color, several colors with one removed, and the standard multi-select |
+| `tests/demoqa/date-picker.spec.ts` | the open calendar matches the field; a chosen month, year, and day; previous and next month; a typed leap day kept and an impossible day rejected; a date and time from the time list |
 
 ### [UI Testing Playground](http://uitestingplayground.com/)
 
