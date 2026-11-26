@@ -1,4 +1,5 @@
 import { test as base, expect } from '@playwright/test';
+import { AccordianPage } from './accordian.page';
 import { blockDemoQaAds } from './ads';
 import { ButtonsPage } from './buttons.page';
 import { CheckboxPage } from './checkbox.page';
@@ -10,6 +11,7 @@ import { TextBoxPage } from './text-box.page';
 import { WebTablesPage } from './web-tables.page';
 
 type DemoQaFixtures = {
+  accordian: AccordianPage;
   buttons: ButtonsPage;
   checkbox: CheckboxPage;
   datePicker: DatePickerPage;
@@ -23,12 +25,18 @@ type DemoQaFixtures = {
 /**
  * Every DemoQA page gets ad traffic aborted on the context so overlays
  * never cover Submit, radio labels, table actions, the button row, the check box tree,
- * the select menus, or the date pickers.
+ * the select menus, the date pickers, or the accordian headings.
  */
 export const test = base.extend<DemoQaFixtures>({
   context: async ({ context }, use) => {
     await blockDemoQaAds(context);
     await use(context);
+  },
+
+  accordian: async ({ page }, use) => {
+    const accordian = new AccordianPage(page);
+    await accordian.open();
+    await use(accordian);
   },
 
   buttons: async ({ page }, use) => {
